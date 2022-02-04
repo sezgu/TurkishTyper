@@ -29,12 +29,33 @@ namespace TurkishTyper
         private readonly IReadOnlyDictionary<Key, CharPair> m_CharMap;
         private RecursionGuard m_Guard = new RecursionGuard(false);
 
-        public HookHandler(Key[] upperCombination, Key[] lowerCombination, IReadOnlyDictionary<Key, CharPair> charMap)
+        public IReadOnlyList<Key> UpperCombination
         {
-            foreach (var key in upperCombination)
-                m_UpperCombination[key] = false;
-            foreach (var key in lowerCombination)
-                m_LowerCombination[key] = false;
+            get { return m_UpperCombination.Keys.ToArray(); }
+            set
+            {
+                m_UpperCombination.Clear();
+                foreach (var key in value)
+                    m_UpperCombination[key] = false;
+            }
+        }
+
+        public IReadOnlyList<Key> LowerCombination
+        {
+            get { return m_LowerCombination.Keys.ToArray(); }
+            set
+            {
+                m_LowerCombination.Clear();
+                foreach (var key in value)
+                    m_LowerCombination[key] = false;
+                
+            }
+        }
+
+        public HookHandler(Key[] lowerCombination, Key[] upperCombination, IReadOnlyDictionary<Key, CharPair> charMap)
+        {
+            LowerCombination = lowerCombination;
+            UpperCombination = upperCombination;
             m_CharMap = charMap;
         }
 
@@ -67,8 +88,6 @@ namespace TurkishTyper
 
             return null;
         }
-
-
 
         public bool Handle(Action action, Key vkCode, uint scanCode, uint flags)
         {
